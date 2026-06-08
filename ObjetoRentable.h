@@ -87,7 +87,7 @@ public:
         this->capacidadPersonas = capacidadPersonas;
     }
 
-    // Override
+    // Override para mostrar la distintas formas de mostrar informacion de los objetos
     string mostrarInformacion() override {
 
         return informacionBase() +
@@ -120,7 +120,7 @@ public:
         this->depositoRequerido = depositoRequerido;
     }
 
-    // Override
+    // Override para mostrar la distintas formas de mostrar informacion de los objetos
     string mostrarInformacion() override {
 
         return Vehiculo::mostrarInformacion() +
