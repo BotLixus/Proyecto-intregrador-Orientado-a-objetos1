@@ -19,7 +19,7 @@ private:
     double depositoEntregado;
     double totalPagar;
 
-    // Relaciones usando punteros IMPORTANTE ESTUDIAR
+    // Relaciones usando punteros 
     ObjetoRentable* productoRentado;
     vector<ObjetoRentable*> accesoriosRentados;
 
