@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Clase abstracata, cualquier cosa que pueda rentar el sistema
+// Clase abstracta, cualquier cosa que pueda rentar el sistema
 class ObjetoRentable {
 
 protected:
@@ -47,9 +47,7 @@ public:
     void setPrecioDia(double precioDia) { this->precioDia = precioDia; }
     void setDisponible(bool disponible) { this->disponible = disponible; }
 
-    /*
-        informacion comun en todas las clase, para ahorrar codigo
-    */
+    //informacion comun en todas las clase, para ahorrar codigo
     string informacionBase() {
 
         return "ID: " + to_string(id) +
@@ -153,7 +151,7 @@ public:
         this->cantidad = cantidad;
     }
 
-    // Override
+    // Override para mostrar las distintas informacion de los objetos
     string mostrarInformacion() override {
 
         return informacionBase() +
