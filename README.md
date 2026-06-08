@@ -1,24 +1,123 @@
-# Proyecto-intregrador-Orientado-a-objetos1
+Sistema de Renta Turística para Playa y Dunas
+Descripción del proyecto
 
-¿De qué trata el proyecto?
-Es un sistema diseñado para gestionar un negocio de renta de vehículos en la playa. El objetivo es que el trabajador tenga una herramienta organizada para controlar tanto los productos como el dinero. El proyecto se divide en tres sistemas principales:
-Sistema de Control del Producto (Inventario): Sirve para administrar todas las unidades disponibles (autos, yates, Razers) y los productos extra necesarios, como chalecos salvavidas y gafas para la arena. Aquí se lleva el registro de qué está libre para rentar y qué no.
-Sistema de Clientes: Es donde se anotan los datos de las personas y se guarda su documentación (como la licencia o identificación) para que el negocio tenga un respaldo de quién se llevó el vehículo.
-Sistema de Cobro y Facturación: Es el que hace la cuenta final. Suma el tiempo que se usó el vehículo, los productos extra que se pidieron y genera la factura si el cliente la necesita.
+Este proyecto consiste en un sistema desarrollado en C++ para administrar un negocio de renta turística ubicado en una zona de playa y dunas.
 
-Estado del Avance y Próximos Pasos:
-Lo que se entrega en el diagrama ULM es el esqueleto funcional. Es la estructura de cómo se conectan las clases, pero todavía falta pulir los detalles. En la siguiente etapa voy a organizar mis ideas para añadir:
-Atributos Técnicos: Detalles como la potencia, el tipo de tracción (4x4, integral), si es automático o estándar, y si el motor es eléctrico o de combustión.
-Encapsulamiento: Implementar los getters y setters para que los sistemas puedan consultar y actualizar los datos de los productos de forma correcta y segura.
-Lógica de Precios: Definir cómo cambian los costos dependiendo de si el vehículo es normal o de la categoría especial (como los Razers).
-En si falta hacer una lluvia de ideas para añadir mas atributos y metodos a las clases de los autos, ademas de los setters y getters de los sistemas.
+El sistema permite controlar la disponibilidad de vehículos y accesorios, registrar clientes y calcular el costo de las rentas realizadas.
 
-Objetivo de este diseño:
-Este diagrama sirve como mapa para asegurar que el trabajador no olvide ningún cobro y que siempre sepa dónde están las unidades y los productos extra. Es una base sólida que permite que el negocio crezca y se mantenga ordenado sin importar cuántos clientes lleguen al día.
+Su objetivo principal es ayudar al trabajador a mantener organizado el inventario y evitar errores durante el proceso de renta.
 
-Identificación de clases y relación con el problema:
-En el diagrama identifiqué las clases necesarias para que el negocio funcione: la jerarquía de vehículos (Vehiculo, Terrestre, Acuatico, TerrestreEspecial), los ProductoExtra (chalecos/gafas) y los sistemas de control. La relación es clara: el Sistema de Cobro se conecta con el Inventario y los Clientes para que todo el flujo de renta esté amarrado y no se pierda información.
+Funcionalidades
 
-Casos que harían que el proyecto deje de funcionar:
-Fuga de RAM: Si borro vehículos del inventario pero no libero la memoria con delete, el programa va a consumir RAM hasta que la compu se trabe.
-Punteros nulos: Si intento cobrar un vehículo que ya se borró de la lista, el programa va a buscar algo que no existe y va a tronar 
+El sistema permite:
+
+Registrar vehículos normales.
+Registrar vehículos especiales.
+Registrar accesorios.
+Consultar el inventario disponible.
+Buscar objetos por ID o nombre.
+Registrar clientes.
+Procesar rentas.
+Calcular el costo total de una renta.
+Aplicar depósitos de seguridad a vehículos especiales.
+Identificación de clases y relación con el problema
+
+Para modelar el negocio se identificaron las siguientes clases:
+
+ObjetoRentable
+
+Clase abstracta que representa cualquier elemento que puede ser rentado dentro del negocio.
+
+Contiene información común como:
+
+ID
+Nombre
+Descripción
+Precio por hora
+Precio por día
+Disponibilidad
+Vehiculo
+
+Hereda de ObjetoRentable.
+
+Representa los vehículos turísticos estándar y agrega la capacidad de pasajeros.
+
+VehiculoEspecial
+
+Hereda de Vehiculo.
+
+Representa vehículos utilizados en actividades más exigentes, como recorridos por dunas. Requiere un depósito de seguridad adicional antes de ser rentado.
+
+Accesorio
+
+Hereda de ObjetoRentable.
+
+Representa elementos complementarios para la experiencia del cliente, como cascos o equipo de seguridad.
+
+Cliente
+
+Almacena la información de las personas que realizan rentas y los productos asociados a ellas.
+
+Sistema
+
+Administra el inventario, los clientes y el proceso completo de renta.
+
+Estas clases representan directamente los elementos necesarios para el funcionamiento de un negocio de renta turística, permitiendo mantener el control de los productos disponibles, los clientes registrados y los pagos realizados.
+
+Conceptos de Programación Orientada a Objetos Implementados
+Herencia
+Vehiculo hereda de ObjetoRentable.
+Accesorio hereda de ObjetoRentable.
+VehiculoEspecial hereda de Vehiculo.
+Clase Abstracta
+
+La clase ObjetoRentable es abstracta debido al método virtual puro:
+
+virtual string mostrarInformacion() = 0;
+Polimorfismo
+
+El inventario utiliza:
+
+vector<ObjetoRentable*> inventario;
+
+permitiendo almacenar distintos tipos de objetos rentables en una misma colección.
+
+Sobrescritura (Override)
+
+Cada clase derivada implementa su propia versión del método:
+
+mostrarInformacion()
+Sobrecarga
+
+La clase Sistema implementa dos métodos de búsqueda:
+
+buscarObjeto(int id);
+buscarObjeto(string nombre);
+Encapsulamiento
+
+Los atributos de las clases se encuentran protegidos mediante modificadores de acceso y son manipulados mediante getters y setters.
+
+Casos que pueden afectar el funcionamiento del sistema
+IDs duplicados
+
+El sistema asume que cada objeto tiene un identificador único.
+
+Si existen dos objetos con el mismo ID, las búsquedas pueden devolver resultados incorrectos y provocar operaciones sobre el objeto equivocado.
+
+Registro incorrecto de vehículos especiales
+
+Los vehículos especiales deben agregarse utilizando:
+
+agregarVehiculoEspecial(...)
+
+Si se agregan mediante:
+
+agregarAlInventario(...)
+
+no serán registrados dentro de la colección de vehículos especiales y el depósito correspondiente no será cobrado durante la renta.
+
+Datos de renta inválidos
+
+Actualmente no se valida que los días u horas de renta sean positivos.
+
+Ingresar valores negativos puede producir cálculos incorrectos en el costo total de una renta.
