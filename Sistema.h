@@ -91,7 +91,7 @@ public:
         return nullptr;
     }
 
-    // Proceso para rentar
+    // proceso de renta
     void realizarRenta(int idCli,string nom,string tel,bool lic,bool licEsp,int idObj,int dias,int horas) {
 
         ObjetoRentable* obj = buscarObjeto(idObj);
@@ -117,7 +117,7 @@ public:
                     especial->getDepositoRequerido();
             }
 
-            // Calcular total
+            // calcular el precio total
             double total =
                 (obj->getPrecioDia() * dias) +
                 (obj->getPrecioHora() * horas) +
