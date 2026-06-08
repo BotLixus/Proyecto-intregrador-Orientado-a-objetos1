@@ -121,3 +121,5 @@ Datos de renta inválidos
 Actualmente no se valida que los días u horas de renta sean positivos.
 
 Ingresar valores negativos puede producir cálculos incorrectos en el costo total de una renta.
+
+<img width="1116" height="1792" alt="image" src="https://github.com/user-attachments/assets/7840f8b0-6f3e-4d81-afd7-b2172a59397d" />
