@@ -1,75 +1,106 @@
 #ifndef CLIENTE_H
 #define CLIENTE_H
 
-#include <string>
-#include <vector>
+// Se incluye ObjetoRentable.h porque Cliente necesita usar Vehiculo y Accesorio.
 #include "ObjetoRentable.h"
+
+// sstream sirve para crear textos largos y regresarlos como string.
+#include <sstream>
+// Usar vectores
+#include <vector>
 
 using namespace std;
 
 class Cliente {
 private:
-    int idCliente;
-    string nombre;
-    string telefono;
-    bool tieneLicencia;
-    bool tieneLicenciaEspecial;
-    int horasRenta;
-    int diasRenta;
-    double depositoEntregado;
-    double totalPagar;
+    // COMPETENCIA: MODIFICADORES DE ACCESO. Estos atributos son private porque solo la clase Cliente debe controlarlos directamente.
+    string idCliente;           // Clave del cliente
+    string nombreCompleto;      // Nombre completo del cliente
+    string telefono;            // Telefono del cliente
+    bool tieneLicencia;         // Indica si el cliente tiene licencia normal.
+    bool tieneLicenciaEspecial; // Indica si el cliente tiene licencia especial (Yates, lanchas,etc)
+    int diasRenta;              // Cantidad de dias que durara la renta.
+    int horasRenta;             // Cantidad de horas adicionales de renta.
+    double depositoEntregado;   // Dinero que entrego como deposito si es necesario
+    double totalPagado;         // Total calculado de la renta.
 
-    // Relaciones usando punteros 
-    ObjetoRentable* productoRentado;
-    vector<ObjetoRentable*> accesoriosRentados;
+    // Apuntador al vehiculo rentado, guarda la direccion del vehiculo que ya existe en Sistema.
+    Vehiculo* vehiculoRentado;
+
+    // Lista de accesorios rentados por el cliente, se guardan apuntadores porque los accesorios originales estan en el inventario del Sistema.
+    vector<Accesorio*> accesoriosRentados;
+
+    // Lista paralela a accesoriosRentados, een la misma posicion se guarda cuantas unidades de ese accesorio rento el cliente.
+    vector<int> cantidadesAccesoriosRentados;
 
 public:
-    // Constructor con parametros para agilizar la creacion de clientes a a la hora de rentar
-    Cliente(int id, string nom, string tel, bool lic, bool licEsp, int dias, int horas)
-        : idCliente(id), nombre(nom), telefono(tel), tieneLicencia(lic),
-          tieneLicenciaEspecial(licEsp), diasRenta(dias), horasRenta(horas),
-          productoRentado(nullptr), depositoEntregado(0.0), totalPagar(0.0) {}
+    // Constructor por default
+    Cliente()
+        : idCliente(""), nombreCompleto(""), telefono(""), tieneLicencia(false), tieneLicenciaEspecial(false), diasRenta(0), horasRenta(0), depositoEntregado(0), totalPagado(0), vehiculoRentado(nullptr) {}
 
-    // Destructor
-    ~Cliente() = default;
+    // Constructor con parametros. Se usa cuando el sistema registra una renta.
+    Cliente(string idCliente, string nombreCompleto, string telefono, bool tieneLicencia, bool tieneLicenciaEspecial, int diasRenta, int horasRenta, double depositoEntregado)
+        : idCliente(idCliente), nombreCompleto(nombreCompleto), telefono(telefono), tieneLicencia(tieneLicencia), tieneLicenciaEspecial(tieneLicenciaEspecial), diasRenta(diasRenta), horasRenta(horasRenta),
+          depositoEntregado(depositoEntregado), totalPagado(0), vehiculoRentado(nullptr) {}
 
-
-    int getIdCliente() const { return idCliente; }
-    string getNombre() const { return nombre; }
-    string getTelefono() const { return telefono; }
-    bool getTieneLicencia() const { return tieneLicencia; }
-    bool getTieneLicenciaEspecial() const { return tieneLicenciaEspecial; }
-    int getHorasRenta() const { return horasRenta; }
-    int getDiasRenta() const { return diasRenta; }
+    // Getters
+    string getIdCliente() const { return idCliente; }
     double getDepositoEntregado() const { return depositoEntregado; }
-    double getTotalPagar() const { return totalPagar; }
+    Vehiculo* getVehiculoRentado() const { return vehiculoRentado; }
 
+    // Estos getters regresan las listas de accesorios y cantidades para poder devolverlos al inventario.
+    vector<Accesorio*> getAccesoriosRentados() const { return accesoriosRentados; }
+    vector<int> getCantidadesAccesoriosRentados() const { return cantidadesAccesoriosRentados; }
 
-    void setIdCliente(int id) { idCliente = id; }
-    void setNombre(const string& nom) { nombre = nom; }
-    void setTelefono(const string& tel) { telefono = tel; }
-    void setTieneLicencia(bool lic) { tieneLicencia = lic; }
-    void setTieneLicenciaEspecial(bool licEsp) { tieneLicenciaEspecial = licEsp; }
-    void setHorasRenta(int horas) { horasRenta = horas; }
-    void setDiasRenta(int dias) { diasRenta = dias; }
-    void setDepositoEntregado(double dep) { depositoEntregado = dep; }
-    void setTotalPagar(double total) { totalPagar = total; }
-
-
-
-    // Metodos
-
-    // Asigna el vehiculo que se va a rentar NO SE ACABO DE IMPLEMENTAR
-    void asignarProducto(ObjetoRentable* prod) {
-        productoRentado = prod;
+    // Guarda el total final que el cliente pago por la renta.
+    void setTotalPagado(double totalPagado) {
+        this->totalPagado = totalPagado;
     }
 
-    // Añade un accesorio al vector de accesorios, NO SE ACABO DE IMPLEMENTAR
-    void agregarAccesorio(ObjetoRentable* acc) {
-        accesoriosRentados.push_back(acc);
+    // Asigna el vehiculo que el cliente esta rentando.
+    void asignarVehiculo(Vehiculo* vehiculo) {
+        vehiculoRentado = vehiculo;
     }
 
-    
+    // Agrega un accesorio a la renta y su cantidad.
+    void asignarAccesorio(Accesorio* accesorio, int cantidad) {
+        accesoriosRentados.push_back(accesorio);
+        cantidadesAccesoriosRentados.push_back(cantidad);
+    }
+
+    // Misma funcion que en objetorentable es para mostrar toda la info del objeto
+    string mostrarInformacion() const {
+        stringstream ss;
+
+        ss << "ID cliente:" << idCliente
+           << "\nNombre completo: " << nombreCompleto
+           << "\nTelefono: " << telefono
+           << "\nLicencia normal:" << (tieneLicencia ? "Si" : "No")
+           << "\nLicencia especial: " << (tieneLicenciaEspecial ? "Si" : "No")
+           << "\nDias de renta: " << diasRenta
+           << "\nHoras de renta: " << horasRenta
+           << "\nDeposito entregado: $" << depositoEntregado
+           << "\nTotal pagado: " << totalPagado;
+
+        // Muestra el vehiculo asociado a este cliente.
+        ss << "\nVehiculo rentado: " << vehiculoRentado->getNombre()
+           << " (ID: " << vehiculoRentado->getId() << ")";
+
+        // Muestra los accesorios rentados. Si no hay accesorios, muestra "Ninguno".
+        ss << "\nAccesorios rentados:";
+        if (accesoriosRentados.empty()) {
+            ss << " Ninguno";
+        }
+        else {
+            for (int i = 0; i < accesoriosRentados.size(); i++) {
+                ss << "\n - " << cantidadesAccesoriosRentados[i]
+                   << " x " << accesoriosRentados[i]->getNombre()
+                   << " (ID: " << accesoriosRentados[i]->getId() << ")";
+            }
+        }
+
+        return ss.str();
+    }
 };
 
 #endif
