@@ -106,10 +106,12 @@ Datos de renta inválidos
 
 Actualmente no se valida que los días u horas de renta sean positivos. Ingresar valores negativos puede generar cálculos incorrectos en el costo total.
 
-COMO CORRER EL PROGRAMA
-g++ main.cpp -o programa Compilar
+COMO CORRER EL PROGRAMA+
 
-program.exe Ejecutar
+ cd "RUTA DE LA CARPETA CON LOS ARCHIVOS"
+g++ -std=c++17 main.cpp -o sistema.exe 
+./sistema.exe
+
 
 <img width="1048" height="1774" alt="image" src="https://github.com/user-attachments/assets/d235546a-9aaf-4198-8fc1-41f9eb4e01af" />
 
