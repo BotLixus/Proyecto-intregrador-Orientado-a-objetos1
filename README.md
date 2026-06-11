@@ -113,5 +113,6 @@ g++ -std=c++17 main.cpp -o sistema.exe
 ./sistema.exe
 
 
-<img width="1048" height="1774" alt="image" src="https://github.com/user-attachments/assets/d235546a-9aaf-4198-8fc1-41f9eb4e01af" />
+<img width="2801" height="1630" alt="image" src="https://github.com/user-attachments/assets/c6a62140-3168-4462-81fe-2de2f8a25ada" />
+
 
