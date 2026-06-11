@@ -1,162 +1,171 @@
 #ifndef OBJETORENTABLE_H
 #define OBJETORENTABLE_H
 
+// sstream permite construir textos largos usando stringstream, como si fuera cout, pero guardando el resultado en una variable string.
+#include <sstream>
+
 #include <string>
 
 using namespace std;
 
-// Clase abstracta, cualquier cosa que pueda rentar el sistema
+// COMPETENCIA: CLASES ABSTRACTAS.
+// Esta clase es abstracta porque tiene un metodo virtual puro:virtual string mostrarInformacion() const = 0;
+// Eso significa que no se pueden crear objetos directamente de ObjetoRentable, pero si se puede usar como base para Vehiculo, VehiculoEspecial y Accesorio.
 class ObjetoRentable {
-
 protected:
 
-    int id;
-    string nombre;
-    string descripcion;
-    double precioHora;
-    double precioDia;
-    bool disponible;
+    // COMPETENCIA: MODIFICADORES DE ACCESO.
+
+    string id;             // Clave de cada producto rentable
+    string nombre;         // Nombre del vehiculo/accesorio
+    string descripcion;    // Descripcion breve del producto.
+    double precioHora;     // Precio que cuesta rentarlo por hora.
+    double precioDia;      // Precio que cuesta rentarlo por dia.
+    bool disponible;       // Indica si el producto esta disponible o no.
 
 public:
+    // Constructor default. Inicializa el objeto con valores vacios o en cero.
+    ObjetoRentable(): id(""), nombre(""), descripcion(""), precioHora(0), precioDia(0), disponible(true) {}
 
-    // Constructor
-    ObjetoRentable()
-        : id(0),
-          nombre(""),
-          descripcion(""),
-          precioHora(0.0),
-          precioDia(0.0),
-          disponible(true) {}
+    // Constructor con parametro crear un objeto ya con sus datos principales.
+    ObjetoRentable(string id, string nombre, string descripcion, double precioHora, double precioDia)
+        : id(id), nombre(nombre), descripcion(descripcion), precioHora(precioHora), precioDia(precioDia), disponible(true) {}
 
-    // Destructor virtual, para poder borrar cualquier clase
+    // Destructor virtual. Es importante porque el sistema maneja objetos con apuntadores de tipo ObjetoRentable*, pero realmente pueden ser Vehiculo, VehiculoEspecial o Accesorio.
     virtual ~ObjetoRentable() = default;
 
-
-    int getId() const { return id; }
+    // Getters
+    string getId() const { return id; }
     string getNombre() const { return nombre; }
     string getDescripcion() const { return descripcion; }
     double getPrecioHora() const { return precioHora; }
     double getPrecioDia() const { return precioDia; }
     bool getDisponible() const { return disponible; }
 
-
-    void setId(int id) { this->id = id; }
-    void setNombre(const string& nombre) { this->nombre = nombre; }
-    void setDescripcion(const string& descripcion) { this->descripcion = descripcion; }
+    // Setters
+    void setId(string id) { this->id = id; }
+    void setNombre(string nombre) { this->nombre = nombre; }
+    void setDescripcion(string descripcion) { this->descripcion = descripcion; }
     void setPrecioHora(double precioHora) { this->precioHora = precioHora; }
     void setPrecioDia(double precioDia) { this->precioDia = precioDia; }
     void setDisponible(bool disponible) { this->disponible = disponible; }
 
-    //informacion comun en todas las clase, para ahorrar codigo
-    string informacionBase() {
+    // Este metodo es para guardar toda la informacion que comparte las clases, para ahorrar codigo a la hora de usar Mostrarinformacion
+    string informacionBase() const {
+        stringstream ss;
 
-        return "ID: " + to_string(id) +
-               "\nNombre: " + nombre +
-               "\nDescripcion: " + descripcion +
-               "\nPrecio por hora: $" + to_string(precioHora) +
-               "\nPrecio por dia: $" + to_string(precioDia) +
-               "\nDisponible: " + (disponible ? string("Si") : string("No"));
+        ss << "ID: " << id
+           << "\nNombre: " << nombre
+           << "\nDescripcion: " << descripcion
+           << "\nPrecio por hora: $" << precioHora
+           << "\nPrecio por dia: $" << precioDia
+           << "\nDisponible: " << (disponible ? "Si" : "No");
+
+        return ss.str();
     }
 
-    // Metodo Virtual para mostrar la distinta informacion en cada objeto
-    virtual string mostrarInformacion() = 0;
+    // COMPETENCIA: POLIMORFISMO Y CLASES ABSTRACTAS.
+    // Este metodo es virtual puro porque cada clase hija debe mostrar su informacion de manera diferente. Por eso ObjetoRentable funciona como clase base abstracta.
+    virtual string mostrarInformacion() const = 0;
 };
 
-
-// CLase vehiculo heradada de ObjetoRentable
+// COMPETENCIA: HERENCIA. Vehiculo hereda de ObjetoRentable
 class Vehiculo : public ObjetoRentable {
-
 protected:
-
-    int capacidadPersonas;
+    // protected porque VehiculoEspecial tambien necesita usar este atributo.
+    int capacidadPersonas; // Cantidad de personas que caben en el vehiculo.
 
 public:
-
     // Constructor
-    Vehiculo()
-        : ObjetoRentable(),
-          capacidadPersonas(0) {}
+    Vehiculo() : ObjetoRentable(), capacidadPersonas(0) {}
 
+    // Constructor con parametros. Primero manda los datos comunes al constructor de ObjetoRentable y luego guarda el dato propio de Vehiculo: capacidadPersonas.
+    Vehiculo(string id, string nombre, string descripcion,double precioHora, double precioDia, int capacidadPersonas)
+        : ObjetoRentable(id, nombre, descripcion, precioHora, precioDia), capacidadPersonas(capacidadPersonas) {}
 
-    int getCapacidadPersonas() {
-        return capacidadPersonas;
-    }
-
+    int getCapacidadPersonas() const { return capacidadPersonas; }
 
     void setCapacidadPersonas(int capacidadPersonas) {
         this->capacidadPersonas = capacidadPersonas;
     }
 
-    // Override para mostrar la distintas formas de mostrar informacion de los objetos
-    string mostrarInformacion() override {
+    // COMPETENCIA: SOBREESCRITURA DE METODOS.
+    // Aqui se sobrescribe mostrarInformacion(), que viene de la clase madre, el virtual puro
+    string mostrarInformacion() const override {
+        stringstream ss;
 
-        return informacionBase() +
-               "\nCapacidad: " +
-               to_string(capacidadPersonas);
+        ss << informacionBase()
+           << "\nTipo: Vehiculo"
+           << "\nCapacidad de personas: " << capacidadPersonas;
+
+        return ss.str();
     }
 };
 
-//Clase VehiculoEspecial heradado de Vehiculo
+// COMPETENCIA: HERENCIA. VehiculoEspecial hereda de Vehiculo
 class VehiculoEspecial : public Vehiculo {
-
 private:
-
-    double depositoRequerido;
+    // private porque este dato solo pertenece al vehiculo especial.
+    double depositoRequerido; // Cantidad de dinero que se pide como deposito para rentarlo.
 
 public:
-
     // Constructor
-    VehiculoEspecial()
-        : Vehiculo(),
-          depositoRequerido(0.0) {}
+    VehiculoEspecial() : Vehiculo(), depositoRequerido(0) {}
 
+    // Constructor con parametros, usa el constructor de Vehiculo y agrega el deposito requerido como dato especial.
+    VehiculoEspecial(string id, string nombre, string descripcion, double precioHora, double precioDia, int capacidadPersonas, double depositoRequerido)
+        : Vehiculo(id, nombre, descripcion, precioHora, precioDia, capacidadPersonas), depositoRequerido(depositoRequerido) {}
 
-    double getDepositoRequerido() {
-        return depositoRequerido;
-    }
-
+    double getDepositoRequerido() const { return depositoRequerido; }
 
     void setDepositoRequerido(double depositoRequerido) {
         this->depositoRequerido = depositoRequerido;
     }
 
-    // Override para mostrar la distintas formas de mostrar informacion de los objetos
-    string mostrarInformacion() override {
+    // COMPETENCIA: SOBREESCRITURA DE METODOS. VehiculoEspecial muestra informacion parecida a Vehiculo, pero agrega el deposito requerido.
+    string mostrarInformacion() const override {
+        stringstream ss;
 
-        return Vehiculo::mostrarInformacion() +
-               "\nDeposito requerido: $" +
-               to_string(depositoRequerido);
+        ss << informacionBase()
+           << "\nTipo: Vehiculo especial"
+           << "\nCapacidad de personas: " << capacidadPersonas
+           << "\nDeposito requerido: $" << depositoRequerido;
+
+        return ss.str();
     }
 };
-//Clase accesorio heredada de ObjetoRetable
+
+// COMPETENCIA: HERENCIA. Accesorio tambien hereda de ObjetoRentable
 class Accesorio : public ObjetoRentable {
-
 private:
-
-    int cantidad;
+    // private porque la cantidad solo debe modificarse con sus metodos.
+    int cantidad; // Numero de unidades disponibles de ese accesorio.
 
 public:
+    // Constructor por default. Un accesorio sin cantidad no puede estar disponible para renta
+    Accesorio() : ObjetoRentable(), cantidad(0) {disponible = false;}
 
-    // Constructor
-    Accesorio()
-        : ObjetoRentable(),
-          cantidad(0) {}
+    // Constructor con parametros. Si la cantidad es mayor que 0, se marca como disponible.
+    Accesorio(string id, string nombre, string descripcion, double precioHora, double precioDia, int cantidad)
+        : ObjetoRentable(id, nombre, descripcion, precioHora, precioDia), cantidad(cantidad) {disponible = cantidad > 0;}
 
-    int getCantidad() {
-        return cantidad;
-    }
+    int getCantidad() const { return cantidad; }
 
-
+    // Al cambiar la cantidad tambien se actualiza disponible, si cantidad es 0, ya no esta disponible.
     void setCantidad(int cantidad) {
         this->cantidad = cantidad;
+        disponible = cantidad > 0;
     }
 
-    // Override para mostrar las distintas informacion de los objetos
-    string mostrarInformacion() override {
+    // COMPETENCIA: SOBREESCRITURA DE METODOS. Accesorio muestra su informacion agregando la cantidad disponible.
+    string mostrarInformacion() const override {
+        stringstream ss;
 
-        return informacionBase() +
-               "\nCantidad disponible: " +
-               to_string(cantidad);
+        ss << informacionBase()
+           << "\nTipo: Accesorio"
+           << "\nCantidad disponible: " << cantidad;
+
+        return ss.str();
     }
 };
 
